@@ -3,7 +3,9 @@ const path = require('path');
 const { CustomTray } = require("./customTray");
 
 let mainWindow
+let tray
 
+app.dock.hide()
 function createWindow() {
     mainWindow = new BrowserWindow(
         {
@@ -19,10 +21,11 @@ function createWindow() {
     )
 
     mainWindow.loadFile('index.html')
+    mainWindow.on('blur', () => mainWindow.hide())
 
     const icon = process.platform === 'win32' ? 'icon-win.png' : 'icon.png'
 
-    new CustomTray(
+    tray = new CustomTray(
         path.join(__dirname, 'assets', icon),
         mainWindow
     )

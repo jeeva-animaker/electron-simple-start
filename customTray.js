@@ -1,10 +1,12 @@
 const { Tray } = require("electron");
+const { Menu } = require("electron/main");
 
 class CustomTray extends Tray {
     constructor(iconPath, mainWindow) {
         super(iconPath)
         this.mainWindow = mainWindow
 
+        this.setToolTip('Tray App')
         this.on('click', (event, bounds) => {
             if (this.mainWindow.isVisible()) {
                 this.mainWindow.hide()
@@ -23,6 +25,17 @@ class CustomTray extends Tray {
                 )
                 this.mainWindow.show()
             }
+        })
+        this.on('right-click', (event) => {
+            const menu = Menu.buildFromTemplate(
+                [
+                    {
+                        role: 'quit'
+                    }
+                ]
+            )
+
+            this.popUpContextMenu(menu)
         })
     }
 
