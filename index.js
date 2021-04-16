@@ -1,8 +1,11 @@
 const { BrowserWindow, app } = require("electron");
+const { ipcMain } = require("electron/main");
+const Ffmpeg = require("fluent-ffmpeg");
 const path = require('path')
 
+let mainWindow
 function createWindow() {
-    const win = new BrowserWindow(
+    mainWindow = new BrowserWindow(
         {
             width: 800,
             height: 600,
@@ -12,7 +15,7 @@ function createWindow() {
         }
     )
 
-    win.loadFile('index.html')
+    mainWindow.loadFile('index.html')
 }
 
 app.whenReady()
@@ -32,3 +35,25 @@ app.on('window-all-closed', () => {
         app.quit()
     }
 })
+
+ipcMain.on(
+    'video:submit',
+    (event, videoPath) => {
+        Ffmpeg.ffprobe(
+            videoPath,
+            (err, metadata) => {
+                if (!err) {
+                    mainWindow.webContents.send(
+                        'video:duration',
+                        metadata.format.duration
+                    )
+                } else {
+                    mainWindow.webContents.send(
+                        'video:error',
+                        err.message
+                    )
+                }
+            }
+        )
+    }
+)
