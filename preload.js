@@ -1,15 +1,16 @@
+const { ipcRenderer } = require("electron/renderer")
+
 window.addEventListener(
     'DOMContentLoaded',
     () => {
-        const replaceText = (selector, text) => {
-            const element = document.getElementById(selector)
-            if (element) {
-                element.innerText = text
-            }
-        }
+        const todoList = document.querySelector('ul')
+        todoList && ipcRenderer.on('todo:add', (event, todo) => {
+            const item = document.createElement('li')
+            item.innerText = todo
 
-        for (const type of ['node', 'chrome', 'electron']) {
-            replaceText(`${type}-version`, process.versions[type])
-        }
+            todoList.appendChild(item)
+        }).on('todo:clear', (event) => {
+            todoList.innerHTML = ''
+        })
     }
 )
