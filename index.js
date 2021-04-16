@@ -1,30 +1,16 @@
 const { BrowserWindow, app } = require("electron");
 const path = require('path');
 const { CustomTray } = require("./customTray");
+const { MainWindow } = require("./mainWindow");
 
 let mainWindow
 let tray
 
 app.dock.hide()
 function createWindow() {
-    mainWindow = new BrowserWindow(
-        {
-            width: 300,
-            height: 450,
-            frame: false,
-            resizable: false,
-            show: false,
-            webPreferences: {
-                preload: path.join(__dirname, 'preload.js')
-            }
-        }
-    )
-
-    mainWindow.loadFile('index.html')
-    mainWindow.on('blur', () => mainWindow.hide())
+    mainWindow = new MainWindow()
 
     const icon = process.platform === 'win32' ? 'icon-win.png' : 'icon.png'
-
     tray = new CustomTray(
         path.join(__dirname, 'assets', icon),
         mainWindow

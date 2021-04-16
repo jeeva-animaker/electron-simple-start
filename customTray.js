@@ -1,5 +1,4 @@
-const { Tray } = require("electron");
-const { Menu } = require("electron/main");
+const { Tray, Menu } = require("electron/main");
 
 class CustomTray extends Tray {
     constructor(iconPath, mainWindow) {
