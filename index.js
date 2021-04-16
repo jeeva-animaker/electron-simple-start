@@ -1,9 +1,10 @@
 const { BrowserWindow, app } = require("electron");
 const { Tray } = require("electron/main");
-const path = require('path')
+const path = require('path');
+const { CustomTray } = require("./customTray");
 
 let mainWindow
-let tray
+
 function createWindow() {
     mainWindow = new BrowserWindow(
         {
@@ -22,29 +23,10 @@ function createWindow() {
 
     const icon = process.platform === 'win32' ? 'icon-win.png' : 'icon.png'
 
-    tray = new Tray(
-        path.join(__dirname, 'assets', icon)
+    new CustomTray(
+        path.join(__dirname, 'assets', icon),
+        mainWindow
     )
-
-    tray.on('click', (event, bounds) => {
-        if (mainWindow.isVisible()) {
-            mainWindow.hide()
-        } else {
-            const { x, y } = bounds
-            const { width, height } = mainWindow.getBounds()
-
-            const yOffset = process.platform === 'darwin' ? y : y - height
-            mainWindow.setBounds(
-                {
-                    width,
-                    height,
-                    x: x - width / 2,
-                    y: yOffset
-                }
-            )
-            mainWindow.show()
-        }
-    })
 }
 
 app.whenReady()
