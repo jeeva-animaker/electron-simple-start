@@ -1,4 +1,5 @@
 const { BrowserWindow, app } = require("electron");
+const { ipcMain } = require("electron");
 const path = require('path');
 const { CustomTray } = require("./customTray");
 const { MainWindow } = require("./mainWindow");
@@ -16,6 +17,12 @@ function createWindow() {
         mainWindow
     )
 }
+
+ipcMain.on('timer:update', (e, time) => {
+    if (time >= 0) {
+        tray.setTitle(`${time}`)
+    }
+})
 
 app.whenReady()
     .then(

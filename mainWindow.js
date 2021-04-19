@@ -11,7 +11,8 @@ class MainWindow extends BrowserWindow {
                 resizable: false,
                 show: false,
                 webPreferences: {
-                    preload: path.join(__dirname, 'preload.js')
+                    preload: path.join(__dirname, 'preload.js'),
+                    backgroundThrottling: false
                 }
             }
         )
