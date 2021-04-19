@@ -12,11 +12,11 @@ fs.readdirSync('node_modules')
   });
 
 module.exports = {
-  // externals: nodeModules,
+  externals: nodeModules,
   entry: [
     './src/index.js'
   ],
-  target: 'web',
+  target: 'node',
   output: {
     path: __dirname,
     publicPath: '/',
