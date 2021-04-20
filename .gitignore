@@ -1,3 +1,5 @@
 node_modules
 electron/dist
 .parcel-cache
+dist
+.DS_Store
