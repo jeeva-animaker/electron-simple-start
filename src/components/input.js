@@ -29,7 +29,7 @@ export const ResultContainer = styled.div`
 
 
 export function Input({ active, history, func, ans, isSubmitted }) {
-    const lastFunc = history.pop()
+    const lastFunc = history[history.length - 1]
 
     let showFunc = func || '0'
     if (isSubmitted) {

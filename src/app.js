@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
 import { buttonGrid, operators } from './buttons'
 import { Button } from './components/button'
@@ -102,6 +102,7 @@ export function App() {
                 newAns = 'Error'
             }
             setAns(newAns)
+
             setHistory(
                 [
                     ...history,
@@ -122,6 +123,53 @@ export function App() {
 
         action(button)
     }
+
+    useEffect(() => {
+        let listener = (event) => {
+            let button = null
+            if (['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(event.key)) {
+                button = {
+                    role: 'number',
+                    value: event.key
+                }
+            } else if (event.key === 'Backspace') {
+                button = {
+                    role: 'clear',
+                }
+            } else if (event.key === 'Enter' || event.key === '=') {
+                button = {
+                    role: 'submit'
+                }
+            } else if (['+', '-', '*', '/', '%'].includes(event.key)) {
+                button = {
+                    role: 'operator',
+                    value: event.key
+                }
+            } else if (event.key === '(') {
+                button = {
+                    role: 'openFunc',
+                    value: '('
+                }
+            } else if (event.key === ')') {
+                button = {
+                    role: 'closeFunc',
+                    value: ')'
+                }
+            } else if (event.key === '.') {
+                button = {
+                    role: 'decimalPoint',
+                    value: '.'
+                }
+            }
+            if (button) {
+                onButtonClick(button)
+            }
+        }
+        window.addEventListener('keydown', listener)
+        return () => {
+            window.removeEventListener('keydown', listener)
+        };
+    })
 
     return (
         <ThemeProvider
