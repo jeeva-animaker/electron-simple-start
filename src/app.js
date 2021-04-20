@@ -63,7 +63,11 @@ export function App() {
             if (operators.includes(lastChar)) {
                 newFunc = newFunc.substring(0, newFunc.length - 1)
             }
-            newFunc = (newFunc || ans) + button.value
+            if (newFunc) {
+                newFunc = newFunc + button.value
+            } else if (ans !== 'Error' && ans !== 'NaN') {
+                newFunc = ans + button.value
+            }
             setFunc(newFunc)
         },
         openFunc: (button) => {
