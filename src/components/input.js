@@ -28,7 +28,20 @@ export const ResultContainer = styled.div`
 `
 
 
-export function Input({ active }) {
+export function Input({ active, history, func, ans, isSubmitted }) {
+    const lastFunc = history.pop()
+
+    let showFunc = func || '0'
+    if (isSubmitted) {
+        showFunc = ans
+    }
+
+    let showAns = ans !== '' ? 'Ans = ' + ans : ''
+    if (isSubmitted) {
+        showAns = lastFunc + ' = '
+    }
+
+
     return (
         <InputWrapper active>
             <ResultContainer>
@@ -39,10 +52,12 @@ export function Input({ active }) {
                         }
                     }
                 ></span>
-                <span>80 + 20 = 100</span>
+                <span>
+                    {showAns}
+                </span>
             </ResultContainer>
             <InputElement >
-                80 + 20
+                {showFunc}
             </InputElement>
         </InputWrapper>
     )
