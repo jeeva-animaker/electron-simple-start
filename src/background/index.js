@@ -5,18 +5,19 @@ let RECORDER = {
     constraints: {
         video: true
     },
+    devices: [],
     instance: null,
     stream: null,
     blobs: []
 }
-const sendMessageById = (id, msg) => {
-    chrome.tabs.sendMessage(id, msg);
+const sendMessageById = (id, message, payload = null) => {
+    chrome.tabs.sendMessage(id, { message, payload });
 }
-const sendMessage = (msg) => {
+const sendMessage = (message, payload = null) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const activeTab = tabs[0];
         if (activeTab) {
-            sendMessageById(activeTab.id, msg);
+            sendMessageById(activeTab.id, message, payload);
         }
     });
 }
@@ -28,12 +29,23 @@ function getStream() {
 }
 
 chrome.runtime.onMessage.addListener(
-    (e) => {
+    (e, sender, response) => {
+        let result = false
         switch (e.message) {
             case 'video:permission:success':
                 RECORDER.permission = true
                 break;
+            case 'video:devices:list':
+                getVideoDevicesList()
+                    .then(devices => response(devices))
+                result = true
+                break;
             case 'video:record:start':
+                RECORDER.constraints.video = {
+                    deviceId: {
+                        exact: e.payload.deviceId
+                    }
+                }
                 startRecord()
                 break;
             case 'video:record:stop':
@@ -43,8 +55,22 @@ chrome.runtime.onMessage.addListener(
                 console.log(e.message)
                 break;
         }
+        return result
     }
 )
+
+function getVideoDevicesList(type) {
+    return navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+            let videoDevices = []
+            devices.forEach(device => {
+                if (device.kind === 'videoinput') {
+                    videoDevices.push(device)
+                }
+            })
+            return videoDevices
+        })
+}
 
 function startRecord() {
     getStream()
@@ -59,11 +85,7 @@ function startRecord() {
                 }
             )
             RECORDER.instance.startRecording()
-            sendMessage(
-                {
-                    message: 'video:record:started'
-                }
-            )
+            sendMessage('video:record:started')
         })
 }
 
@@ -72,12 +94,5 @@ function stopRecord() {
         RECORDER.instance.save('video.webm')
     })
     RECORDER.stream && RECORDER.stream.stop()
-    sendMessage(
-        {
-            message: 'video:record:stopped'
-        }
-    )
+    sendMessage('video:record:stopped')
 }
-
-navigator.mediaDevices.enumerateDevices()
-    .then(console.log(value))

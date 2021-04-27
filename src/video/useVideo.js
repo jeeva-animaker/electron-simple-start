@@ -3,56 +3,41 @@ import { MainContext } from "./main";
 import { getStream, sendMessage } from "./helpers";
 
 export function useVideo() {
+    const constraints = {
+        video: true
+    }
     const { state, dispatch } = useContext(MainContext)
 
     const videoEle = useRef()
 
     function getPermissions() {
-        getStream(state.constraints).then(
+        getStream(constraints).then(
             stream => {
                 stream.getTracks().forEach(track => {
                     track.stop()
                 });
-                sendMessage(
-                    {
-                        message: 'video:permission:success'
-                    }
-                )
+                sendMessage('video:permission:success')
             }
         ).catch(error => {
             console.log(error)
-            sendMessage(
-                {
-                    message: 'video:permission:error',
-                    error
-                }
-            )
+            sendMessage('video:permission:error', error)
         })
     }
 
     function showVideo() {
-        getStream(state.constraints).then(
+        getStream(constraints).then(
             stream => {
                 videoEle.current.srcObject = stream
                 dispatch({
-                    type: 'ADD_STREAM',
+                    type: 'video:stream:created',
                     payload: {
                         stream
                     }
                 })
-                sendMessage(
-                    {
-                        message: 'video:show:success'
-                    }
-                )
+                sendMessage('video:show:success')
             }
         ).catch(error => {
-            sendMessage(
-                {
-                    message: 'video:show:error',
-                    error
-                }
-            )
+            sendMessage('video:show:error', error)
         })
     }
 
@@ -63,11 +48,7 @@ export function useVideo() {
         } else {
             state.stream.getTracks().forEach(track => track.stop())
         }
-        sendMessage(
-            {
-                message: 'video:hide:success'
-            }
-        )
+        sendMessage('video:hide:success')
     }
 
     const windowMessageListener = (e) => {
@@ -76,6 +57,9 @@ export function useVideo() {
                 getPermissions()
                 break;
             case 'video:record:start':
+                constraints.video = {
+                    exact: e.data.payload.deviceId
+                }
                 showVideo()
                 break;
             case 'video:record:stop':
@@ -95,6 +79,7 @@ export function useVideo() {
     }, [state]);
 
     return {
+        ...state,
         videoEle
     }
 

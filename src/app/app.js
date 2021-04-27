@@ -1,18 +1,23 @@
 import React from 'react'
 import styled from 'styled-components'
+import { getUrl } from './helpers'
+import { useApp } from './useApp'
 
 const AppWrapper = styled.div`
+`
+
+const PopupWrapper = styled.div`
     position: fixed;
-    top: 0;
-    right: 0;
+    top: 10px;
+    right: 10px;
     width: 300px;
     height: 400px;
     display: flex;
     flex-direction: column;
-    z-index: 9;
     background-color: white;
     padding: 15px;
     border: 1px solid;
+    z-index: 999999;
 `
 
 const TypeSelectGroup = styled.div`
@@ -20,7 +25,7 @@ const TypeSelectGroup = styled.div`
     width: 100%;
     height: auto;
 `
-const TypeButton = styled.a`
+const TypeButton = styled.button`
     display: flex;
     width: 100%;
     padding: 15px;
@@ -42,26 +47,90 @@ const RecordButton = styled.button`
     width: 100%;
     display: block;
     padding: 10px;
+    background: #cfcfcf;
+`
+
+const IframeWrapper = styled.div`
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    width: 200px;
+    height: auto;
+    z-index: 999999;
+`
+
+const Iframe = styled.iframe`
+    width: 200px;
+    height: 200px;
+    border: none;
+    background: white;
+    display: ${props => props.show ? 'block' : 'none'};
 `
 
 export function App() {
+    const {
+        isLoading,
+        videoDevices,
+        videoFrame,
+        currentDeviceId,
+        isRecordStarted,
+        showVideoFrame,
+        onVideoDeviceSelect,
+        startRecord,
+        stopRecord
+    } = useApp()
+
     return (
         <AppWrapper>
-            <TypeSelectGroup>
-                <TypeButton selected>
-                    Outside
-                </TypeButton>
-                <TypeButton>
-                    Inline
-                </TypeButton>
-            </TypeSelectGroup>
-            <VideoSelector>
-                <option>device 1</option>
-                <option>device 2</option>
-            </VideoSelector>
-            <RecordButton>
-                Start Recording
-            </RecordButton>
+            {
+                !isLoading &&
+                <PopupWrapper>
+                    <TypeSelectGroup>
+                        <TypeButton selected>
+                            Outside
+                    </TypeButton>
+                        <TypeButton>
+                            Inline
+                    </TypeButton>
+                    </TypeSelectGroup>
+                    <VideoSelector
+                        value={currentDeviceId}
+                        onChange={onVideoDeviceSelect}
+                    >
+                        {
+                            videoDevices && videoDevices.map(
+                                (device, i) => (
+                                    <option key={i} value={device.deviceId}>{device.label}</option>
+                                )
+                            )
+                        }
+                    </VideoSelector>
+                    {
+                        !isRecordStarted &&
+                        <RecordButton
+                            onClick={startRecord}
+                        >
+                            Start Recording
+                            </RecordButton>
+                    }
+                    {
+                        isRecordStarted &&
+                        <RecordButton
+                            onClick={stopRecord}
+                        >
+                            Stop Recording
+                            </RecordButton>
+                    }
+                </PopupWrapper>
+            }
+            <IframeWrapper>
+                <Iframe
+                    allow='camera;microphone'
+                    ref={videoFrame}
+                    show={showVideoFrame}
+                    src={getUrl('public/video/index.html')}
+                />
+            </IframeWrapper>
         </AppWrapper>
     )
 }
