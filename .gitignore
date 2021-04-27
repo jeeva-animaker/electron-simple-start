@@ -1,0 +1,5 @@
+node_modules
+.parcel-cache
+extension/content_scripts/app
+extension/public/video
+.DS_Store

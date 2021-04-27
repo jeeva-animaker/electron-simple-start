@@ -1,0 +1,31 @@
+{
+    "short_name": "Sample",
+    "name": "Sample",
+    "version": "1.0.0",
+    "manifest_version": 2,
+    "background": {
+        "page": "background/background.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "/content_scripts/content.js"
+            ]
+        }
+    ],
+    "permissions": [
+        "<all_urls>",
+        "tabCapture",
+        "activeTab",
+        "tabs",
+        "storage",
+        "desktopCapture",
+        "notifications"
+    ],
+    "web_accessible_resources": [
+        "public/*"
+    ]
+}
