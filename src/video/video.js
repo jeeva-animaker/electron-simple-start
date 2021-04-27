@@ -1,6 +1,5 @@
-import React, { useContext, useRef } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { MainContext } from './main'
 import { useVideo } from './useVideo'
 
 const VideoContainer = styled.div`
@@ -13,8 +12,7 @@ const VideoContainer = styled.div`
 `
 
 export function Video() {
-    const { state, dispatch } = useContext(MainContext)
-    const { videoEle } = useVideo(state, dispatch)
+    const { videoEle } = useVideo()
 
     return (
         <VideoContainer >

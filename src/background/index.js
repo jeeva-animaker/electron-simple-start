@@ -78,3 +78,6 @@ function stopRecord() {
         }
     )
 }
+
+navigator.mediaDevices.enumerateDevices()
+    .then(console.log(value))

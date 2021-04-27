@@ -1,7 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
+import { MainContext } from "./main";
 import { getStream, sendMessage } from "./helpers";
 
-export function useVideo(state, dispatch) {
+export function useVideo() {
+    const { state, dispatch } = useContext(MainContext)
 
     const videoEle = useRef()
 
