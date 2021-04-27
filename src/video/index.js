@@ -1,6 +1,3 @@
-
-console.log('public/index.js')
-
 const STATE = {
     constraints: {
         video: true
@@ -86,7 +83,11 @@ function showVideo() {
 
 function stopVideo() {
     video.src = ''
-    STATE.stream && STATE.stream.stop()
+    if (STATE.stream && STATE.stream.stop) {
+        STATE.stream.stop()
+    } else {
+        STATE.stream.getTracks().forEach(track => track.stop())
+    }
     sendMessage(
         {
             message: 'video:hide:success'

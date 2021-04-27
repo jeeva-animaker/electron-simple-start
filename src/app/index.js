@@ -1,5 +1,3 @@
-console.log('content')
-
 const STATE = {
     videoPermission: false
 }

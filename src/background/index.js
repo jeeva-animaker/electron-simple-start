@@ -1,5 +1,4 @@
 import RecordRTC, { MediaStreamRecorder } from 'recordrtc'
-console.log('background')
 
 let RECORDER = {
     permission: false,
