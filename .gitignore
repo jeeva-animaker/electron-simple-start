@@ -3,3 +3,4 @@ node_modules
 extension/content_scripts/app
 extension/public/video
 .DS_Store
+extension/background

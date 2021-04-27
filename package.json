@@ -4,20 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch-app": "parcel watch --target=app src/app/index.js",
+    "watch-background": "parcel watch --target=background --no-hmr src/background/index.html",
+    "build-background": "parcel build --target=background --no-source-maps src/background/index.html",
+    "watch-app": "parcel watch --target=app --no-hmr src/app/index.js",
     "build-app": "parcel build --target=app --no-source-maps src/app/index.js",
-    "watch-video": "parcel watch --target=video src/video/index.html",
+    "watch-video": "parcel watch --target=video --no-hmr src/video/index.html",
     "build-video": "parcel build --target=video --no-source-maps src/video/index.html",
     "start": "concurrently \"npm:watch-*\"",
     "build": "concurrently \"npm:build-*\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "targets": {
+    "background": {
+      "distDir": "extension/background",
+      "publicUrl": "./"
+    },
     "app": {
       "distDir": "extension/content_scripts/app"
     },
     "video": {
-      "distDir": "extension/public/video"
+      "distDir": "extension/public/video",
+      "publicUrl": "./"
     }
   },
   "repository": {

@@ -1,4 +1,3 @@
-import RecordRTC from 'recordrtc'
 
 console.log('public/index.js')
 
