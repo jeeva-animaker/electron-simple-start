@@ -125,11 +125,23 @@ export function useApp() {
         sendMessage('video:record:stop')
     }
 
+    const changeVideoPlayer = (value) => {
+        dispatch(
+            {
+                type: 'video:player:select',
+                payload: {
+                    value
+                }
+            }
+        )
+    }
+
     return {
         ...state,
         videoFrame,
         onVideoDeviceSelect,
         startRecord,
-        stopRecord
+        stopRecord,
+        changeVideoPlayer
     }
 }

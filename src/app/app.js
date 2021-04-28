@@ -77,7 +77,9 @@ export function App() {
         showVideoFrame,
         onVideoDeviceSelect,
         startRecord,
-        stopRecord
+        stopRecord,
+        changeVideoPlayer,
+        videoPlayer
     } = useApp()
 
     return (
@@ -86,12 +88,18 @@ export function App() {
                 !isLoading &&
                 <PopupWrapper>
                     <TypeSelectGroup>
-                        <TypeButton selected>
+                        <TypeButton
+                            selected={videoPlayer === 'outside'}
+                            onClick={e => { changeVideoPlayer('outside') }}
+                        >
                             Outside
-                    </TypeButton>
-                        <TypeButton>
-                            Inline
-                    </TypeButton>
+                        </TypeButton>
+                        <TypeButton
+                            selected={videoPlayer === 'inside'}
+                            onClick={e => { changeVideoPlayer('inside') }}
+                        >
+                            Inside
+                        </TypeButton>
                     </TypeSelectGroup>
                     <VideoSelector
                         value={currentDeviceId}

@@ -25,6 +25,9 @@ export function Main() {
                     newState.showVideoFrame = action.payload.value
                 case 'video:record:toggle':
                     newState.isRecordStarted = action.payload.value
+                case 'video:player:select':
+                    newState.videoPlayer = action.payload.value;
+                    break;
                 default:
                     break;
             }
@@ -35,7 +38,8 @@ export function Main() {
             haveVideoPermission: false,
             showVideoFrame: false,
             isRecordStarted: false,
-            currentDeviceId: ''
+            currentDeviceId: '',
+            videoPlayer: 'outside'
         }
     )
 
