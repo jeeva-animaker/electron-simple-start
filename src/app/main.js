@@ -10,6 +10,12 @@ export function Main() {
         (state, action) => {
             const newState = _.cloneDeep(state)
             switch (action.type) {
+                case 'app:open':
+                    newState.isOpen = true
+                    break;
+                case 'app:close':
+                    newState.isOpen = false
+                    break;
                 case 'video:permission:success':
                     newState.haveVideoPermission = true
                     break;
@@ -31,11 +37,13 @@ export function Main() {
                     newState.videoPlayer = action.payload.value;
                     break;
                 default:
+                    console.log(action.type)
                     break;
             }
             return newState
         },
         {
+            isOpen: false,
             isLoading: true,
             haveVideoPermission: false,
             showVideoFrame: false,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import styled from 'styled-components'
 import { getUrl } from './helpers'
 import { useApp } from './useApp'
@@ -82,7 +82,10 @@ const Iframe = styled.iframe`
 
 export function App() {
     const {
+        isOpen,
         isLoading,
+        haveVideoPermission,
+        askPermission,
         videoDevices,
         videoFrame,
         currentDeviceId,
@@ -95,66 +98,74 @@ export function App() {
         videoPlayer
     } = useApp()
 
-    return (
+    return isOpen && (
         <AppWrapper>
-            {
-                !isLoading &&
-                <PopupWrapper>
-                    <TypeSelectGroup>
-                        <TypeButton
-                            selected={videoPlayer === 'outside'}
-                            onClick={e => { changeVideoPlayer('outside') }}
-                        >
-                            Outside
-                        </TypeButton>
-                        <TypeButton
-                            selected={videoPlayer === 'inside'}
-                            onClick={e => { changeVideoPlayer('inside') }}
-                        >
-                            Inside
-                        </TypeButton>
-                    </TypeSelectGroup>
-                    {
-                        videoPlayer === 'inside' &&
-                        <IframeWrapper inside>
-                            <Iframe
-                                allow='camera;microphone'
-                                ref={videoFrame}
-                                show={showVideoFrame}
-                                src={getUrl('public/video/index.html')}
-                            />
-                        </IframeWrapper>
-                    }
-                    <VideoSelector
-                        value={currentDeviceId}
-                        onChange={onVideoDeviceSelect}
+            <PopupWrapper>
+                <TypeSelectGroup>
+                    <TypeButton
+                        selected={videoPlayer === 'outside'}
+                        onClick={e => { changeVideoPlayer('outside') }}
                     >
-                        {
-                            videoDevices && videoDevices.map(
-                                (device, i) => (
-                                    <option key={i} value={device.deviceId}>{device.label}</option>
+                        Outside
+                    </TypeButton>
+                    <TypeButton
+                        selected={videoPlayer === 'inside'}
+                        onClick={e => { changeVideoPlayer('inside') }}
+                    >
+                        Inside
+                    </TypeButton>
+                </TypeSelectGroup>
+                {
+                    videoPlayer === 'inside' &&
+                    <IframeWrapper inside>
+                        <Iframe
+                            allow='camera;microphone'
+                            ref={videoFrame}
+                            show={showVideoFrame}
+                            src={getUrl('public/video/index.html')}
+                        />
+                    </IframeWrapper>
+                }
+                {
+                    haveVideoPermission &&
+                    <Fragment>
+                        <VideoSelector
+                            value={currentDeviceId}
+                            onChange={onVideoDeviceSelect}
+                        >
+                            {
+                                videoDevices && videoDevices.map(
+                                    (device, i) => (
+                                        <option key={i} value={device.deviceId}>{device.label}</option>
+                                    )
                                 )
-                            )
+                            }
+                        </VideoSelector>
+                        {
+                            !isRecordStarted &&
+                            <RecordButton
+                                onClick={startRecord}
+                            >
+                                Start Recording
+                                </RecordButton>
                         }
-                    </VideoSelector>
-                    {
-                        !isRecordStarted &&
-                        <RecordButton
-                            onClick={startRecord}
-                        >
-                            Start Recording
-                            </RecordButton>
-                    }
-                    {
-                        isRecordStarted &&
-                        <RecordButton
-                            onClick={stopRecord}
-                        >
-                            Stop Recording
-                            </RecordButton>
-                    }
-                </PopupWrapper>
-            }
+                        {
+                            isRecordStarted &&
+                            <RecordButton
+                                onClick={stopRecord}
+                            >
+                                Stop Recording
+                                </RecordButton>
+                        }
+                    </Fragment>
+                }
+                {
+                    !haveVideoPermission &&
+                    <RecordButton
+                        onClick={e => askPermission()}
+                    >Enable Video</RecordButton>
+                }
+            </PopupWrapper>
             {
                 videoPlayer === 'outside' &&
                 <IframeWrapper>

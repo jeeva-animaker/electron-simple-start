@@ -18,12 +18,27 @@ export function useApp() {
 
     useEffect(
         () => {
-            videoFrame.current && videoFrame.current.addEventListener('load', () => {
-                askPermission()
+            // videoFrame.current && videoFrame.current.addEventListener('load', () => {
+            //     askPermission()
+            // })
+
+            sendMessage('video:permission:check', null, (result) => {
+                if (result) {
+                    onPermissionSuccess()
+                }
             })
         },
         []
     )
+
+    const onPermissionSuccess = () => {
+        dispatch(
+            {
+                type: 'video:permission:success'
+            }
+        )
+        getVideoDevices()
+    }
 
     const getVideoDevices = () => {
         sendMessage(
@@ -45,12 +60,7 @@ export function useApp() {
     const windowMessageListener = (e) => {
         switch (e.data.message) {
             case 'video:permission:success':
-                dispatch(
-                    {
-                        type: 'video:permission:success'
-                    }
-                )
-                getVideoDevices()
+                onPermissionSuccess()
                 break;
             case 'video:show:success':
                 dispatch(
@@ -73,6 +83,7 @@ export function useApp() {
                 )
                 break;
             default:
+                console.log(e.data.message)
                 break;
         }
     }
@@ -80,6 +91,13 @@ export function useApp() {
     const chromeRuntimeMessageHanlder = ((data, sender, response) => {
         let result = false
         switch (data.message) {
+            case 'app:toggle':
+                if (state.isOpen) {
+                    dispatch({ type: 'app:close' })
+                } else {
+                    dispatch({ type: 'app:open' })
+                }
+                break;
             case 'video:record:started':
                 dispatch(
                     {
@@ -101,6 +119,7 @@ export function useApp() {
                 )
                 break;
             default:
+                console.log(data.message)
                 break;
         }
         return result
@@ -150,6 +169,7 @@ export function useApp() {
     return {
         ...state,
         videoFrame,
+        askPermission,
         onVideoDeviceSelect,
         startRecord,
         stopRecord,

@@ -28,10 +28,26 @@ function getStream() {
     )
 }
 
+function checkPermission() {
+    return navigator.permissions.query({ name: 'camera' })
+        .then(result => {
+            if (result.state === 'granted') {
+                RECORDER.permission = true
+                return true
+            }
+            return false
+        })
+}
+
 chrome.runtime.onMessage.addListener(
     (e, sender, response) => {
         let result = false
         switch (e.message) {
+            case 'video:permission:check':
+                checkPermission()
+                    .then(result => response(result))
+                result = true
+                break;
             case 'video:permission:success':
                 RECORDER.permission = true
                 break;
@@ -96,3 +112,9 @@ function stopRecord() {
     RECORDER.stream && RECORDER.stream.stop()
     sendMessage('video:record:stopped')
 }
+
+function onBrowserActionClicked() {
+    sendMessage('app:toggle')
+}
+
+chrome.browserAction.onClicked.addListener(onBrowserActionClicked)

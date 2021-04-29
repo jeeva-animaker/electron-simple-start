@@ -3,6 +3,7 @@
     "name": "Sample",
     "version": "1.0.0",
     "manifest_version": 2,
+    "browser_action": {},
     "background": {
         "page": "background/index.html"
     },

@@ -24,6 +24,7 @@ export function Main() {
                     break;
 
                 default:
+                    console.log(action.type)
                     break;
             }
             return newState
