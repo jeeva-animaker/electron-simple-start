@@ -12,7 +12,7 @@ const PopupWrapper = styled.div`
     right: 10px;
     width: 300px;
     height: 400px;
-    display: flex;
+    display: ${props => props.isOpen ? 'flex' : 'none'};
     flex-direction: column;
     background-color: white;
     padding: 15px;
@@ -98,9 +98,9 @@ export function App() {
         videoPlayer
     } = useApp()
 
-    return isOpen && (
+    return (
         <AppWrapper>
-            <PopupWrapper>
+            <PopupWrapper isOpen={isOpen}>
                 <TypeSelectGroup>
                     <TypeButton
                         selected={videoPlayer === 'outside'}

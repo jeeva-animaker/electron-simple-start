@@ -45,7 +45,7 @@ export function useVideo() {
         videoEle.current.src = ''
         if (state.stream && state.stream.stop) {
             state.stream.stop()
-        } else {
+        } else if (state.stream) {
             state.stream.getTracks().forEach(track => track.stop())
         }
         sendMessage('video:hide:success')
@@ -77,6 +77,13 @@ export function useVideo() {
             window.removeEventListener('message', windowMessageListener)
         };
     }, [state]);
+
+    useEffect(
+        () => {
+            stopVideo()
+        },
+        []
+    )
 
     return {
         ...state,
