@@ -51,9 +51,22 @@ const RecordButton = styled.button`
 `
 
 const IframeWrapper = styled.div`
-    position: fixed;
-    bottom: 10px;
-    left: 10px;
+    ${props => {
+        let position = 'fixed';
+        let bottom = '10px';
+        let left = '10px';
+        if (props.inside) {
+            position = 'relative'
+            bottom = left = '0px'
+        }
+
+        return `
+            position: ${position};
+            bottom: ${bottom};
+            left: ${left};
+        `
+    }}
+    margin: 0 auto;
     width: 200px;
     height: auto;
     z-index: 999999;
@@ -101,6 +114,17 @@ export function App() {
                             Inside
                         </TypeButton>
                     </TypeSelectGroup>
+                    {
+                        videoPlayer === 'inside' &&
+                        <IframeWrapper inside>
+                            <Iframe
+                                allow='camera;microphone'
+                                ref={videoFrame}
+                                show={showVideoFrame}
+                                src={getUrl('public/video/index.html')}
+                            />
+                        </IframeWrapper>
+                    }
                     <VideoSelector
                         value={currentDeviceId}
                         onChange={onVideoDeviceSelect}
@@ -131,14 +155,17 @@ export function App() {
                     }
                 </PopupWrapper>
             }
-            <IframeWrapper>
-                <Iframe
-                    allow='camera;microphone'
-                    ref={videoFrame}
-                    show={showVideoFrame}
-                    src={getUrl('public/video/index.html')}
-                />
-            </IframeWrapper>
+            {
+                videoPlayer === 'outside' &&
+                <IframeWrapper>
+                    <Iframe
+                        allow='camera;microphone'
+                        ref={videoFrame}
+                        show={showVideoFrame}
+                        src={getUrl('public/video/index.html')}
+                    />
+                </IframeWrapper>
+            }
         </AppWrapper>
     )
 }
