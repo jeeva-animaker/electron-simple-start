@@ -57,6 +57,22 @@ export function useApp() {
         )
     }
 
+    useEffect(
+        () => {
+            setTimeout(
+                () => {
+                    if (state.currentDeviceId && state.isOpen) {
+                        sendMessage('video:show:start', { deviceId: state.currentDeviceId })
+                    } else {
+                        sendMessage('video:show:stop')
+                    }
+                },
+                300
+            )
+        },
+        [state.currentDeviceId, state.videoPlayer, state.isOpen]
+    )
+
     const windowMessageListener = (e) => {
         switch (e.data.message) {
             case 'video:permission:success':

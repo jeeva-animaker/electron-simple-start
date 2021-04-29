@@ -16,6 +16,7 @@ export function useVideo() {
                 stream.getTracks().forEach(track => {
                     track.stop()
                 });
+                showVideo()
                 sendMessage('video:permission:success')
             }
         ).catch(error => {
@@ -56,13 +57,13 @@ export function useVideo() {
             case 'video:permission:request':
                 getPermissions()
                 break;
-            case 'video:record:start':
+            case 'video:show:start':
                 constraints.video = {
                     exact: e.data.payload.deviceId
                 }
                 showVideo()
                 break;
-            case 'video:record:stop':
+            case 'video:show:stop':
                 stopVideo()
                 break;
             default:
@@ -80,7 +81,9 @@ export function useVideo() {
 
     useEffect(
         () => {
-            stopVideo()
+            return () => {
+                stopVideo()
+            }
         },
         []
     )
