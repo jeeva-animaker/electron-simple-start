@@ -5,7 +5,7 @@
     "manifest_version": 2,
     "browser_action": {},
     "background": {
-        "page": "background/index.html"
+        "page": "dist/background/index.html"
     },
     "content_scripts": [
         {
@@ -13,7 +13,7 @@
                 "<all_urls>"
             ],
             "js": [
-                "/content_scripts/app/index.js"
+                "dist/content_scripts/app/index.js"
             ]
         }
     ],
@@ -27,7 +27,7 @@
         "notifications"
     ],
     "web_accessible_resources": [
-        "public/video/*",
-        "public/video/*.js"
+        "dist/public/video/*",
+        "dist/public/video/*.js"
     ]
 }

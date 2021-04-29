@@ -121,8 +121,8 @@ export function App() {
                         <Iframe
                             allow='camera;microphone'
                             ref={videoFrame}
-                            show={showVideoFrame}
-                            src={getUrl('public/video/index.html')}
+                            show={haveVideoPermission && isOpen}
+                            src={getUrl('dist/public/video/index.html')}
                         />
                     </IframeWrapper>
                 }
@@ -163,7 +163,7 @@ export function App() {
                     !haveVideoPermission &&
                     <RecordButton
                         onClick={e => askPermission()}
-                    >Enable Video</RecordButton>
+                    >Allow Video Recording</RecordButton>
                 }
             </PopupWrapper>
             {
@@ -172,8 +172,8 @@ export function App() {
                     <Iframe
                         allow='camera;microphone'
                         ref={videoFrame}
-                        show={showVideoFrame}
-                        src={getUrl('public/video/index.html')}
+                        show={haveVideoPermission && isOpen}
+                        src={getUrl('dist/public/video/index.html')}
                     />
                 </IframeWrapper>
             }

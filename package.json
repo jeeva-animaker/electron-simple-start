@@ -16,14 +16,14 @@
   },
   "targets": {
     "background": {
-      "distDir": "extension/background",
+      "distDir": "extension/dist/background",
       "publicUrl": "./"
     },
     "app": {
-      "distDir": "extension/content_scripts/app"
+      "distDir": "extension/dist/content_scripts/app"
     },
     "video": {
-      "distDir": "extension/public/video",
+      "distDir": "extension/dist/public/video",
       "publicUrl": "./"
     }
   },

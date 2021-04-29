@@ -1,6 +1,4 @@
 node_modules
 .parcel-cache
-extension/content_scripts/app
-extension/public/video
+extension/dist
 .DS_Store
-extension/background
