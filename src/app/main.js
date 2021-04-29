@@ -23,8 +23,10 @@ export function Main() {
                     break;
                 case 'video:frame:toggle':
                     newState.showVideoFrame = action.payload.value
+                    break;
                 case 'video:record:toggle':
                     newState.isRecordStarted = action.payload.value
+                    break;
                 case 'video:player:select':
                     newState.videoPlayer = action.payload.value;
                     break;

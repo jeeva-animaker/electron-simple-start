@@ -72,12 +72,20 @@ export function useApp() {
                     }
                 )
                 break;
+            default:
+                break;
+        }
+    }
+
+    const chromeRuntimeMessageHanlder = ((data, sender, response) => {
+        let result = false
+        switch (data.message) {
             case 'video:record:started':
                 dispatch(
                     {
                         type: 'video:record:toggle',
                         payload: {
-                            video: true
+                            value: true
                         }
                     }
                 )
@@ -87,7 +95,7 @@ export function useApp() {
                     {
                         type: 'video:record:toggle',
                         payload: {
-                            video: false
+                            value: false
                         }
                     }
                 )
@@ -95,13 +103,16 @@ export function useApp() {
             default:
                 break;
         }
-    }
+        return result
+    })
 
     useEffect(
         () => {
             window.addEventListener('message', windowMessageListener)
+            chrome.runtime && chrome.runtime.onMessage && chrome.runtime.onMessage.addListener(chromeRuntimeMessageHanlder)
             return () => {
                 window.removeEventListener('message', windowMessageListener)
+                chrome.runtime && chrome.runtime.onMessage && chrome.runtime.onMessage.removeListener(chromeRuntimeMessageHanlder)
             }
         },
         [state]
