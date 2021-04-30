@@ -1,4 +1,5 @@
 import RecordRTC, { MediaStreamRecorder } from 'recordrtc'
+import { db } from './db';
 
 let RECORDER = {
     permission: false,
@@ -8,8 +9,12 @@ let RECORDER = {
     devices: [],
     instance: null,
     stream: null,
+    isRecording: false,
     blobs: []
 }
+
+db.init()
+
 const sendMessageById = (id, message, payload = null) => {
     chrome.tabs.sendMessage(id, { message, payload });
 }
@@ -67,6 +72,10 @@ chrome.runtime.onMessage.addListener(
             case 'video:record:stop':
                 stopRecord()
                 break;
+            case 'video:record:download':
+                downloadRecord().then(blobURL => response(blobURL))
+                result = true
+                break;
             default:
                 console.log(e.message)
                 break;
@@ -92,28 +101,46 @@ function startRecord() {
     getStream()
         .then(stream => {
             RECORDER.stream = stream
-            RECORDER.instance = RecordRTC(
-                stream,
-                {
-                    type: 'video',
-                    mimeType: 'video/webm',
-                    recorderType: MediaStreamRecorder
+            RECORDER.instance = new MediaStreamRecorder(stream, {
+                mimeType: 'video/webm',
+                timeSlice: 1000,
+                ondataavailable: function (blob) {
+                    db.createBlob(blob)
                 }
-            )
-            RECORDER.instance.startRecording()
+            })
+            RECORDER.instance.record()
+            RECORDER.isRecording = true
             sendMessage('video:record:started')
         })
 }
 
 function stopRecord() {
-    RECORDER.instance.stopRecording(blob => {
-        RECORDER.instance.save('video.webm')
+    RECORDER.instance.stop(() => {
+        RECORDER.stream && RECORDER.stream.stop()
+        RECORDER.isRecording = false
+        RECORDER.currentRecord = null
+        sendMessage('video:record:stopped')
     })
-    RECORDER.stream && RECORDER.stream.stop()
-    sendMessage('video:record:stopped')
+}
+
+function downloadRecord() {
+    return db.getBlobs()
+        .then(blobs => {
+            let finalBlob = blobs.map(b => b.blob)
+            finalBlob = new Blob(finalBlob, { type: 'video/webm' })
+            const blobURL = URL.createObjectURL(finalBlob)
+            chrome.downloads.download({
+                url: blobURL,
+                filename: 'video.webm'
+            })
+            return blobURL
+        })
 }
 
 function onBrowserActionClicked() {
+    if (RECORDER.isRecording) {
+        stopRecord()
+    }
     sendMessage('app:toggle')
 }
 

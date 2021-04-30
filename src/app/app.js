@@ -95,7 +95,8 @@ export function App() {
         startRecord,
         stopRecord,
         changeVideoPlayer,
-        videoPlayer
+        videoPlayer,
+        download
     } = useApp()
 
     return (
@@ -159,6 +160,9 @@ export function App() {
                         }
                     </Fragment>
                 }
+                <RecordButton
+                    onClick={e => download()}
+                >Download</RecordButton>
                 {
                     !haveVideoPermission &&
                     <RecordButton

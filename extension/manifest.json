@@ -24,7 +24,8 @@
         "tabs",
         "storage",
         "desktopCapture",
-        "notifications"
+        "notifications",
+        "downloads"
     ],
     "web_accessible_resources": [
         "dist/public/video/*",

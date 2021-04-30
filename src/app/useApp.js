@@ -182,6 +182,16 @@ export function useApp() {
         )
     }
 
+    const download = () => {
+        sendMessage(
+            'video:record:download',
+            null,
+            blobURL => {
+                console.log(blobURL)
+            }
+        )
+    }
+
     return {
         ...state,
         videoFrame,
@@ -189,6 +199,7 @@ export function useApp() {
         onVideoDeviceSelect,
         startRecord,
         stopRecord,
-        changeVideoPlayer
+        changeVideoPlayer,
+        download
     }
 }
